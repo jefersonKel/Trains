@@ -1,0 +1,59 @@
+[
+	{
+		"id":"1", 
+		"ciudades": "ABC",
+		"tipo": "DISTANCIA"
+	}
+	,
+	{
+		"id":"2", 
+		"ciudades": "AD",
+		"tipo": "DISTANCIA"
+	},
+	{
+		"id":"3", 
+		"ciudades": "ADC",
+		"tipo": "DISTANCIA"
+	},
+	{
+		"id":"4", 
+		"ciudades": "AEBCD",
+		"tipo": "DISTANCIA"
+	},
+	{
+		"id":"5", 
+		"ciudades": "AED",
+		"tipo": "DISTANCIA"
+	},
+	{
+		"id":"6", 
+		"ciudades": "CC",
+		"tipo": "NUMERO_VIAJES",
+		"tipoConteo":"MAXIMO",
+		"valor":"3"
+	},
+	{
+		"id":"7", 
+		"ciudades": "AC",
+		"tipo": "NUMERO_VIAJES",
+		"tipoConteo":"IGUAL",
+		"valor":"4"
+	},
+	{
+		"id":"8", 
+		"ciudades": "AC",
+		"tipo": "LONGITUD_CORTA"
+	},
+	{
+		"id":"9", 
+		"ciudades": "BB",
+		"tipo": "LONGITUD_CORTA"
+	},
+	{
+		"id":"10", 
+		"ciudades": "CC",
+		"tipo": "NUMERO_RUTAS",
+		"tipoConteo":"MENOR",
+		"valor":"30"
+	}
+]

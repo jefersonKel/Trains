@@ -1,0 +1,44 @@
+[
+    {
+        "id": "1", 
+        "ciudades": "CDC"
+    }
+    ,
+    {
+        "id": "2", 
+        "ciudades": "CEBC"
+    },
+    {
+        "id": "3", 
+        "ciudades": "ABCDC"
+    },
+    {
+        "id": "4", 
+        "ciudades": "ADEBC"
+    },
+    {
+        "id": "5", 
+        "ciudades": "CEBCDC"
+    },
+    {
+        "id": "6", 
+        "ciudades": "CDCEBC"
+    },
+    {
+        "id": "7", 
+        "ciudades": "CDEBC"
+    },
+    {
+        "id": "8", 
+        "ciudades": "CEBCEBC"
+    },
+    {
+        "id": "9", 
+        "ciudades": "CEBCEBCEBC"
+    },
+    {
+        "id": "10", 
+        "ciudades": "ADCDC"
+    }
+
+]
