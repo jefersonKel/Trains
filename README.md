@@ -1,6 +1,8 @@
 ## Introduccion
 API Rest desarrollada en Java usando Framework Spring boot. 
 
+Proporcionar a sus clientes información sobre las rutas de tren
+
 ## Requisitos
 * [jdk-11.0.11](https://www.oracle.com/java/technologies/javase/jdk11-archive-downloads.html)
 
