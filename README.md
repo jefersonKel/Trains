@@ -15,6 +15,15 @@ API Rest desarrollada en Java usando Framework Spring boot.
   ```
 3. Comprobar la aplicación en el navegador con la url: http://localhost:8080/train/Test debe retornar la palabra Test
 
+4.Los datos de muestra se encuentran en la siguiente ruta
+  ```
+  \src\main\resources\json
+  ```
+  * InformacionCliente.json
+  * Rutas.json
+  * TestInput.json
+
+
 ## Documentación de la API
 Se uso la Swagger-OpenAPI para documentar la API. para ingresar debera ir a: http://localhost:8080/swagger-ui/index.html?configUrl=/api-docs/swagger-config/
 
