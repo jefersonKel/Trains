@@ -32,7 +32,7 @@ Se uso la Swagger-OpenAPI para documentar la API. para ingresar debera ir a: htt
 ```
   http://localhost:8080/swagger-ui/index.html?configUrl=/api-docs/swagger-config/#/train-controller/IngresarDistanias
 ```
-2. Ejecutar el servico dando clien en la opcion Try it out, luego ingresando la trama ###TestInput.json y dar clic en la opcion excute
+2. Ejecutar el servico dando clien en la opcion **Try it out**, luego ingresando la trama **TestInput.json** y dar clic en la opcion **execute**
 
 ```json
     [
