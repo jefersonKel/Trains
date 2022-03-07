@@ -70,8 +70,6 @@ public class InformacionClienteServicio {
     public List<String> procesarInformacionCliente() throws RutaException, ArchivoException {
 
         List<InformacionClienteModelo> listaInformacion = getListaInformacionCliente();
-        List<RutaModelo> listaRutaMuestra = rutaServicio.getListaRutaMuestra();
-
         listaInformacion.stream().forEach(informacion -> {
 
             //LLenar distancia de la lista de paradas en memoria
@@ -81,94 +79,105 @@ public class InformacionClienteServicio {
                                 rutaServicio.getParada(parada).getDistancia());
                     });
 
-            Logger.getLogger(InformacionClienteServicio.class.getName())
-                    .log(Level.INFO, "Procesar informacion: {0}", informacion);
-
-            Logger.getLogger(InformacionClienteServicio.class.getName())
-                    .log(Level.INFO, "Ruta: {0}", informacion.getRuta());
-
-            switch (informacion.getTipo()) {
-                case DISTANCIA:
-
-                    //Verifica si existe alguna parda sin distancia ingresada
-                    if (informacion.getRuta().getListaParadas().stream()
-                            .anyMatch(parada -> parada.getDistancia() == 0)) {
-                        informacion.setResultado("NO SUCH ROUTE");
-                    } else {
-                        //Si todas las parada tienen distancia, calcula la distancia total
-                        informacion.setResultado(
-                                MessageFormat.format(TipoInformacion.DISTANCIA.getDescripcion(),
-                                        new Object[]{informacion.getRuta().getCiudades()})
-                                + "Resultado: " + Integer.toString(informacion.getRuta().getTotalDistancia()));
-                    }
-                    break;
-
-                case NUMERO_VIAJES:
-
-                    Long cantidad = listaRutaMuestra.stream()
-                            .filter(ruta -> ruta.getPrimerParada().equals(informacion.getRuta().getPrimerParada())
-                            && ruta.getUltimaParada().equals(informacion.getRuta().getUltimaParada()))
-                            .filter(ruta
-                                    -> (informacion.getTipoConteo().equals(TipoConteoParada.MAXIMO)
-                            && ruta.getTotalParadas() <= informacion.getValor())
-                            || (informacion.getTipoConteo().equals(TipoConteoParada.IGUAL)
-                            && informacion.getValor() == ruta.getTotalParadas())
-                            ).count();
-
-                    informacion.setResultado(
-                            MessageFormat.format(TipoInformacion.NUMERO_VIAJES.getDescripcion(),
-                                    new Object[]{informacion.getRuta().getPrimerParada(),
-                                        informacion.getRuta().getUltimaParada()})
-                            + "Resultado: " + Long.toString(cantidad));
-
-                    break;
-
-                case NUMERO_RUTAS:
-
-                    List<RutaModelo> listaRutaMuestraFiltro
-                            = listaRutaMuestra.stream()
-                                    .filter(ruta -> ruta.getPrimerParada().equals(informacion.getRuta().getPrimerParada())
-                                    && ruta.getUltimaParada().equals(informacion.getRuta().getUltimaParada()))
-                                    .filter(ruta
-                                            -> informacion.getTipoConteo().equals(TipoConteoParada.MENOR)
-                                    ? ruta.getTotalDistancia() < informacion.getValor() : false)
-                                    .collect(Collectors.toList());
-
-                    informacion.setResultado(MessageFormat.format(TipoInformacion.NUMERO_RUTAS.getDescripcion(),
-                            new Object[]{informacion.getRuta().getPrimerParada(),
-                                informacion.getRuta().getUltimaParada(), informacion.getValor()})
-                            + " Resultado: " + listaRutaMuestraFiltro.size());
-
-                    break;
-
-                case LONGITUD_CORTA:
-
-                    List<RutaModelo> listaRutaGenerada = rutaServicio.getListaRutasGenerar(informacion.getRuta().getPrimerParada(),
-                            informacion.getRuta().getUltimaParada());
-                    if (listaRutaGenerada == null || listaRutaGenerada.isEmpty()) {
-                        informacion.setResultado("NO SUCH ROUTE");
-                    } else {
-                        RutaModelo ruta = rutaServicio.getListaRutasGenerar(
-                                informacion.getRuta().getPrimerParada(),
-                                informacion.getRuta().getUltimaParada()).stream()
-                                .min((ruta1, ruta2) -> Integer.compare(ruta1.getTotalDistancia(), ruta2.getTotalDistancia())).get();
-
-                        informacion.setResultado(MessageFormat.format(TipoInformacion.LONGITUD_CORTA.getDescripcion(),
-                                new Object[]{informacion.getRuta().getPrimerParada(),
-                                    informacion.getRuta().getUltimaParada(), informacion.getValor()})
-                                + "Resultado: Ruta " + ruta.getCiudades() + " distancia " + ruta.getTotalDistancia());
-                    }
-
-                    break;
-
-                default:
-                    break;
+            try {
+                procesarInformacionCliente(informacion);
+            } catch (ArchivoException ex) {
+                Logger.getLogger(InformacionClienteServicio.class.getName()).log(Level.SEVERE, null, ex);
             }
-            Logger.getLogger(InformacionClienteServicio.class.getName())
-                    .log(Level.INFO, "Resultado:{0}", informacion.getResultado());
+
         });
         return listaInformacion.stream()
                 .map(informacion -> "#" + informacion.getId() + " " + informacion.getResultado())
                 .collect(Collectors.toList());
     }
+
+    public InformacionClienteModelo procesarInformacionCliente(InformacionClienteModelo informacion) throws ArchivoException {
+
+        Logger.getLogger(InformacionClienteServicio.class.getName())
+                .log(Level.INFO, "Procesar informacion: {0}", informacion);
+
+        List<RutaModelo> listaRutaMuestra = rutaServicio.getListaRutaMuestra();
+
+        switch (informacion.getTipo()) {
+            case DISTANCIA:
+
+                //Verifica si existe alguna parda sin distancia ingresada
+                if (informacion.getRuta().getListaParadas().stream()
+                        .anyMatch(parada -> parada.getDistancia() == 0)) {
+                    informacion.setResultado("NO SUCH ROUTE");
+                } else {
+                    //Si todas las parada tienen distancia, calcula la distancia total
+                    informacion.setResultado(
+                            MessageFormat.format(TipoInformacion.DISTANCIA.getDescripcion(),
+                                    new Object[]{informacion.getRuta().getCiudades()})
+                            + "Resultado: " + Integer.toString(informacion.getRuta().getTotalDistancia()));
+                }
+                break;
+
+            case NUMERO_VIAJES:
+
+                Long cantidad = listaRutaMuestra.stream()
+                        .filter(ruta -> ruta.getPrimerParada().equals(informacion.getRuta().getPrimerParada())
+                        && ruta.getUltimaParada().equals(informacion.getRuta().getUltimaParada()))
+                        .filter(ruta
+                                -> (informacion.getTipoConteo().equals(TipoConteoParada.MAXIMO)
+                        && ruta.getTotalParadas() <= informacion.getValor())
+                        || (informacion.getTipoConteo().equals(TipoConteoParada.IGUAL)
+                        && informacion.getValor() == ruta.getTotalParadas())
+                        ).count();
+
+                informacion.setResultado(
+                        MessageFormat.format(TipoInformacion.NUMERO_VIAJES.getDescripcion(),
+                                new Object[]{informacion.getRuta().getPrimerParada(),
+                                    informacion.getRuta().getUltimaParada()})
+                        + "Resultado: " + Long.toString(cantidad));
+
+                break;
+
+            case NUMERO_RUTAS:
+
+                List<RutaModelo> listaRutaMuestraFiltro
+                        = listaRutaMuestra.stream()
+                                .filter(ruta -> ruta.getPrimerParada().equals(informacion.getRuta().getPrimerParada())
+                                && ruta.getUltimaParada().equals(informacion.getRuta().getUltimaParada()))
+                                .filter(ruta
+                                        -> informacion.getTipoConteo().equals(TipoConteoParada.MENOR)
+                                ? ruta.getTotalDistancia() < informacion.getValor() : false)
+                                .collect(Collectors.toList());
+
+                informacion.setResultado(MessageFormat.format(TipoInformacion.NUMERO_RUTAS.getDescripcion(),
+                        new Object[]{informacion.getRuta().getPrimerParada(),
+                            informacion.getRuta().getUltimaParada(), informacion.getValor()})
+                        + " Resultado: " + listaRutaMuestraFiltro.size());
+
+                break;
+
+            case LONGITUD_CORTA:
+
+                List<RutaModelo> listaRutaGenerada = rutaServicio.getListaRutasGenerar(informacion.getRuta().getPrimerParada(),
+                        informacion.getRuta().getUltimaParada());
+                if (listaRutaGenerada == null || listaRutaGenerada.isEmpty()) {
+                    informacion.setResultado("NO SUCH ROUTE");
+                } else {
+                    RutaModelo ruta = rutaServicio.getListaRutasGenerar(
+                            informacion.getRuta().getPrimerParada(),
+                            informacion.getRuta().getUltimaParada()).stream()
+                            .min((ruta1, ruta2) -> Integer.compare(ruta1.getTotalDistancia(), ruta2.getTotalDistancia())).get();
+
+                    informacion.setResultado(MessageFormat.format(TipoInformacion.LONGITUD_CORTA.getDescripcion(),
+                            new Object[]{informacion.getRuta().getPrimerParada(),
+                                informacion.getRuta().getUltimaParada(), informacion.getValor()})
+                            + "Resultado: Ruta " + ruta.getCiudades() + " distancia " + ruta.getTotalDistancia());
+                }
+
+                break;
+
+            default:
+                break;
+        }
+        Logger.getLogger(InformacionClienteServicio.class.getName())
+                .log(Level.INFO, "Resultado:{0}", informacion.getResultado());
+        return informacion;
+    }
+
 }

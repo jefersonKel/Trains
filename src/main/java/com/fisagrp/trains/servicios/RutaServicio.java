@@ -41,9 +41,8 @@ public class RutaServicio {
      * @throws com.fisagrp.trains.excepcion.ArchivoException
      */
     public List<RutaModelo> getListaRutaMuestra() throws ArchivoException {
-        String json;
         try {
-            json = new String(Files.readAllBytes(Paths.get(RUTAJSON)));
+            String json = new String(Files.readAllBytes(Paths.get(RUTAJSON)));
             ObjectMapper mapper = new ObjectMapper();
             List<RutaModelo> listaRuta
                     = mapper.readValue(json, new TypeReference<List<RutaModelo>>() {
@@ -72,11 +71,10 @@ public class RutaServicio {
      * @param listaNueva lista de paradas
      */
     public void agregaParadas(List<ParadaModelo> listaNueva) {
-        listaParadas = new ArrayList<>();
-        listaParadas.addAll(listaNueva);
-
-        Logger.getLogger(InformacionClienteServicio.class.getName())
-                .log(Level.INFO, "listaParadas: {0}", listaParadas);
+        listaParadas.addAll(listaNueva.stream()
+                .filter(paradaNueva -> !listaParadas.stream()
+                .anyMatch(parada -> parada.isParadaIgual(paradaNueva)))
+                .collect(Collectors.toList()));
     }
 
     /**
@@ -90,34 +88,24 @@ public class RutaServicio {
      */
     public List<RutaModelo> getListaRutasGenerar(String ciudadInicial, String ciudadFinal) {
 
-        List<RutaModelo> resultado = null;
-        if (isExisteParadaInicia(ciudadInicial, null) && isExisteParadaFinaliza(ciudadFinal)) {
+        List<RutaModelo> listaParadaGenerada = new ArrayList<>();
 
-            List<RutaModelo> lista = new ArrayList<>();
+        if (isExisteParadaInicia(ciudadInicial, null) && isExisteParadaFinaliza(ciudadFinal)) {
 
             getParadasIniciaCiudad(ciudadInicial).stream()
                     .forEach(parada -> {
-
                         RutaModelo ruta = new RutaModelo();
                         ruta.setCiudades(parada.getCiudades());
 
-                        Logger.getLogger(InformacionClienteServicio.class.getName())
-                                .log(Level.INFO, "INICIA:{0}", parada.getCiudades());
-
                         if (!parada.isParadaIgual(ciudadInicial, ciudadFinal)) {
 
-                            String ciudadAnterior = parada.getCiudadInicial();//B
-                            String ciudadUltima = parada.getCiudadFinal();//C
+                            String ciudadAnterior = parada.getCiudadInicial();
+                            String ciudadUltima = parada.getCiudadFinal();
 
                             while (ruta.getCiudades() != null && !ruta.getUltimaParada().equals(ciudadFinal)) {
 
                                 if (isExisteParadaInicia(ciudadUltima, ciudadAnterior)) {
-
                                     ParadaModelo paradaInicia = getParadaInicia(ciudadUltima, ciudadAnterior);
-
-                                    Logger.getLogger(InformacionClienteServicio.class.getName())
-                                            .log(Level.INFO, "SIGUIENTE:{0}", paradaInicia.getCiudades());
-
                                     ciudadAnterior = ciudadUltima;
                                     ciudadUltima = paradaInicia.getCiudadFinal();
                                     ruta.setCiudades(ruta.getCiudades() + ciudadUltima);
@@ -126,28 +114,22 @@ public class RutaServicio {
                                 }
                             }
                         }
-
-                        if (ruta.getCiudades() != null) {
-                            Logger.getLogger(InformacionClienteServicio.class.getName())
-                                    .log(Level.INFO, "TERMINA:{0}", ruta.getCiudades());
-                            if (!lista.stream().anyMatch(r -> r.getCiudades().equals(ruta.getCiudades()))) {
-                                lista.add(ruta);
-                            }
-
+                        if (ruta.getCiudades() != null && !listaParadaGenerada
+                                .stream().anyMatch(r -> r.getCiudades().equals(ruta.getCiudades()))) {
+                            listaParadaGenerada.add(ruta);
                         }
                     });
+
             //LLena las distancia entre rutas
-            lista.stream().forEach(ruta -> {
+            listaParadaGenerada.stream().forEach(ruta -> {
                 ruta.getListaParadas()
                         .stream().forEach(parada -> {
                             parada.setDistancia(
                                     getParada(parada).getDistancia());
                         });
             });
-            resultado = lista;
         }
-
-        return resultado;
+        return listaParadaGenerada;
     }
 
     /**

@@ -40,6 +40,18 @@ public class InformacionClienteModelo {
 
     private RutaModelo ruta;
 
+    public InformacionClienteModelo() {
+    }
+
+    public InformacionClienteModelo(int id, String ciudades, TipoInformacion tipo,
+            TipoConteoParada tipoConteo, int valor) {
+        this.id = id;
+        this.ciudades = ciudades;
+        this.tipo = tipo;
+        this.tipoConteo = tipoConteo;
+        this.valor = valor;
+    }
+
     @Override
     public String toString() {
         return "InformacionClienteModelo{" + "id=" + id + ", ciudades=" + ciudades + ", tipo=" + tipo + ", tipoConteo=" + tipoConteo + ", valor=" + valor + '}';

@@ -25,6 +25,12 @@ public class RutaModelo {
     public RutaModelo() {
     }
 
+    public RutaModelo(int id, String ciudades) {
+        this.id = id;
+        this.ciudades = ciudades;
+        generarListaParada();
+    }
+
     public RutaModelo(String ciudades) {
         this.ciudades = ciudades;
         generarListaParada();

@@ -6,7 +6,6 @@ import com.fisagrp.trains.modelo.ParadaModelo;
 import com.fisagrp.trains.servicios.InformacionClienteServicio;
 import com.fisagrp.trains.servicios.RutaServicio;
 import io.swagger.v3.oas.annotations.Operation;
-//import io.swagger.v3.oas.annotations.Operation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
