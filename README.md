@@ -15,9 +15,7 @@ Proporcionar a sus clientes información sobre las rutas de tren
   ```
   .\mvnw.cmd spring-boot:run
   ```
-3. Comprobar la aplicación en el navegador con la url: http://localhost:8080/train/Test debe retornar la palabra Test
-
-4.Los datos de muestra se encuentran en la siguiente ruta
+3.Los datos de muestra se encuentran en la siguiente ruta
   ```
   \src\main\resources\json
   ```
@@ -28,4 +26,63 @@ Proporcionar a sus clientes información sobre las rutas de tren
 
 ## Documentación de la API
 Se uso la Swagger-OpenAPI para documentar la API. para ingresar debera ir a: http://localhost:8080/swagger-ui/index.html?configUrl=/api-docs/swagger-config/
+
+## Pruebas
+1. Ingresar distancias y ver informacion sobre las rutas del tren: Debe ir a la url 
+```
+  http://localhost:8080/swagger-ui/index.html?configUrl=/api-docs/swagger-config/#/train-controller/IngresarDistanias
+```
+2. Ejecutar el servico dando clien en la opcion Try it out, luego ingresando la trama ###TestInput.json y dar clic en la opcion excute
+
+```json
+    [
+    {
+        "ciudadInicial": "A",
+        "ciudadFinal": "B",
+        "distancia": 5
+    },
+    {
+        "ciudadInicial": "B",
+        "ciudadFinal": "C",
+        "distancia": 4
+    },
+    {
+        "ciudadInicial": "C",
+        "ciudadFinal": "D",
+        "distancia": 8
+    },
+    {
+        "ciudadInicial": "D",
+        "ciudadFinal": "C",
+        "distancia": 8
+    },
+    {
+        "ciudadInicial": "D",
+        "ciudadFinal": "E",
+        "distancia": 6
+    },
+    {
+        "ciudadInicial": "A",
+        "ciudadFinal": "D",
+        "distancia": 5
+    },
+    {
+        "ciudadInicial": "C",
+        "ciudadFinal": "E",
+        "distancia": 2
+    },
+    {
+        "ciudadInicial": "E",
+        "ciudadFinal": "B",
+        "distancia": 3
+    },
+    {
+        "ciudadInicial": "A",
+        "ciudadFinal": "E",
+        "distancia": 7
+    }
+]
+```
+
+
 
